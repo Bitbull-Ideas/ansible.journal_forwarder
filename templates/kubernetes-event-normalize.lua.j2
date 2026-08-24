@@ -1,0 +1,20 @@
+function normalize_kubernetes_event(tag, timestamp, record)
+    local reason = record["reason"] or ""
+    local event_type = record["type"] or ""
+    local kind = record["involved_kind"] or ""
+    local name = record["involved_name"] or ""
+    local namespace = record["namespace"] or ""
+    local original = record["message"] or ""
+    local message = string.format(
+        "kubernetes_event type=%s reason=%s namespace=%s involved=%s/%s message=%s",
+        event_type, reason, namespace, kind, name, original)
+
+    return 1, timestamp, {
+        message = message,
+        hostname = "{{ ansible_facts['hostname'] }}",
+        priority = "6",
+        collector = "kubernetes-event-exporter",
+        collector_instance = "kubernetes-event-exporter-v1.7",
+        log_source = "kubernetes_event"
+    }
+end

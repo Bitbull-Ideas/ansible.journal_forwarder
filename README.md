@@ -70,6 +70,31 @@ git clone https://github.com/joe-speedboat/ansible.journal_forwarder.git /etc/an
         tasks_from: uninstall.yml
 ```
 
+## Optional k3s Kubernetes Event exporter
+
+Set `journal_forwarder_k3s_event_exporter_enabled: true` on a Rocky Linux 9
+k3s node to install the Event exporter manifest and add an input/filter bridge
+to the role's existing GELF output. The feature is disabled by default and
+inherits `graylog_gelf_host`, `graylog_gelf_port`, `graylog_gelf_mode`, and
+`graylog_fluent_bit_workers`; it does not create a second GELF transport.
+
+```mermaid
+flowchart LR
+    K["Kubernetes Event API"] --> E["kubernetes-event-exporter"]
+    E --> F["normalized JSON file"]
+    F --> T["Fluent Bit tail input"]
+    T --> L["Lua scalar normalization"]
+    L --> G["role GELF output"]
+    G --> Y["Graylog"]
+    J["journal / audit / secure"] --> G
+    C["container logs"] --> G
+```
+
+The role adds the opt-in task file `tasks/rhelAll/40_k3s_event_exporter.yml`.
+The k3s manifest is installed into the k3s auto-deploy directory, so k3s
+performs reconciliation. Review the image tag, RBAC scope, hostPath, and
+Graylog destination before enabling this feature on another node.
+
 ## Variables
 
 ### Graylog GELF Connection

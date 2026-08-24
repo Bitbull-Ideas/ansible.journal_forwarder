@@ -1,0 +1,71 @@
+---
+- name: Validate optional k3s Event exporter settings
+  ansible.builtin.assert:
+    that:
+      - journal_forwarder_k3s_event_exporter_image | length > 0
+      - journal_forwarder_k3s_event_exporter_manifest_path | length > 0
+      - journal_forwarder_k3s_event_exporter_log_path | length > 0
+      - journal_forwarder_k3s_event_exporter_namespace | length > 0
+  when: journal_forwarder_k3s_event_exporter_enabled | bool
+
+- name: Ensure k3s Event exporter host log directory
+  ansible.builtin.file:
+    path: "{{ journal_forwarder_k3s_event_exporter_log_path | dirname }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  when: journal_forwarder_k3s_event_exporter_enabled | bool
+
+- name: Install k3s Event exporter manifest
+  ansible.builtin.template:
+    src: k3s-event-exporter.yaml.j2
+    dest: "{{ journal_forwarder_k3s_event_exporter_manifest_path }}"
+    owner: root
+    group: root
+    mode: '0600'
+  when: journal_forwarder_k3s_event_exporter_enabled | bool
+  notify: restart fluent-bit
+
+- name: Install k3s Event normalization Lua filter
+  ansible.builtin.template:
+    src: kubernetes-event-normalize.lua.j2
+    dest: "{{ journal_forwarder_k3s_event_exporter_lua_path }}"
+    owner: root
+    group: root
+    mode: '0644'
+  when: journal_forwarder_k3s_event_exporter_enabled | bool
+  notify: restart fluent-bit
+
+- name: Add k3s Event JSON bridge to Fluent Bit
+  ansible.builtin.blockinfile:
+    path: /etc/fluent-bit/fluent-bit.conf
+    marker: "# {mark} JOURNAL_FORWARDER K3S EVENT EXPORTER"
+    insertbefore: '^\\[OUTPUT\\]'
+    block: |
+      [INPUT]
+          Name              tail
+          Path              {{ journal_forwarder_k3s_event_exporter_log_path }}
+          Tag               k3s_event_file
+          Parser            json
+          DB                {{ journal_forwarder_storage_path }}/k3s-events.db
+          Read_from_Head    On
+          Mem_Buf_Limit     20MB
+          Skip_Long_Lines   On
+
+      [FILTER]
+          Name              lua
+          Match             k3s_event_file
+          Script            {{ journal_forwarder_k3s_event_exporter_lua_path }}
+          Call              normalize_kubernetes_event
+  owner: root
+  group: root
+  mode: '0644'
+  when: journal_forwarder_k3s_event_exporter_enabled | bool
+  notify: restart fluent-bit
+
+- name: Validate Fluent Bit after k3s Event exporter bridge change
+  ansible.builtin.command:
+    argv: [/opt/fluent-bit/bin/fluent-bit, -c, /etc/fluent-bit/fluent-bit.conf, --dry-run]
+  changed_when: false
+  when: journal_forwarder_k3s_event_exporter_enabled | bool
