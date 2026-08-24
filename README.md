@@ -163,6 +163,8 @@ templates/
   fluent-bit.conf.j2
   parsers-journal-forwarder.conf.j2
   audit-package.rules.j2
+  k3s-event-exporter.yaml.j2
+  kubernetes-event-normalize.lua.j2
 ```
 
 ## License

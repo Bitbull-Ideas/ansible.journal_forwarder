@@ -2,6 +2,26 @@
 
 All notable changes to `joe-speedboat.journal_forwarder` are documented in this file.
 
+## Unreleased
+
+### Added
+
+- Added opt-in k3s Kubernetes Event exporter forwarding with
+  `journal_forwarder_k3s_event_exporter_enabled`.
+- Added normalized GELF-safe Kubernetes Event messages through the role's
+  existing Fluent Bit GELF output; no second GELF transport is created.
+- Added k3s Event exporter defaults, manifest, Lua normalization filter, and
+  `tasks/rhelAll/40_k3s_event_exporter.yml`.
+- Added README architecture documentation with a Mermaid data-flow diagram.
+
+### Operational notes
+
+- The feature is disabled by default.
+- Enabling it installs a k3s auto-deploy manifest and uses a hostPath for the
+  normalized Event file.
+- Review the Event exporter image, broad read-only RBAC scope, hostPath, and
+  Graylog destination before enabling it on a target.
+
 ## v1.0.1 - 2026-06-29
 
 ### Added
