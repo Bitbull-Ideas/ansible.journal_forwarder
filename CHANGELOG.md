@@ -2,7 +2,7 @@
 
 All notable changes to `joe-speedboat.journal_forwarder` are documented in this file.
 
-## Unreleased
+## v1.1.0 - 2026-08-24
 
 ### Added
 

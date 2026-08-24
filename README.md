@@ -2,6 +2,8 @@
 
 Linux-only Ansible role for forwarding systemd journal, audit, and selected security/application logs to **Graylog** with **Fluent Bit** over GELF.
 
+**Latest release: `v1.1.0`**
+
 > Windows Event Log forwarding is handled by Ansible role [`joe-speedboat.winlogbeat_forwarder`](https://github.com/joe-speedboat/ansible.winlogbeat_forwarder) with Winlogbeat OSS.   
 This role owns the Linux/Fluent Bit side only.
 
@@ -33,14 +35,14 @@ Create a GELF TCP input before deploying this role. Default port:
 12201/tcp
 ```
 
-## Install role (latest release)
+## Install role (`v1.1.0`)
 ### From Ansible Galaxy
 ```bash
 ansible-galaxy install joe-speedboat.journal_forwarder
 ```
-### From Github (no release awareness)
+### From Github (pinned release)
 ```bash
-git clone https://github.com/joe-speedboat/ansible.journal_forwarder.git /etc/ansible/roles/joe-speedboat.journal_forwarder
+git clone --branch v1.1.0 https://github.com/joe-speedboat/ansible.journal_forwarder.git /etc/ansible/roles/joe-speedboat.journal_forwarder
 ```
 
 ## Quick Start
