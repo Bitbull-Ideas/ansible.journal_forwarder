@@ -10,6 +10,15 @@ graylog_gelf_mode: tcp
 
 # Fluent Bit runtime settings
 graylog_fluent_bit_workers: 2
+
+# Optional k3s Kubernetes Event exporter bridge.
+journal_forwarder_k3s_event_exporter_enabled: false
+journal_forwarder_k3s_event_exporter_image: ghcr.io/resmoio/kubernetes-event-exporter:v1.7
+journal_forwarder_k3s_event_exporter_manifest_path: /var/lib/rancher/k3s/server/manifests/kubernetes-event-exporter.yaml
+journal_forwarder_k3s_event_exporter_log_path: /var/log/kubernetes-events/events.json
+journal_forwarder_k3s_event_exporter_lua_path: /etc/fluent-bit/kubernetes-event-normalize.lua
+journal_forwarder_k3s_event_exporter_namespace: logging
+journal_forwarder_k3s_event_exporter_host_network: true
 journal_forwarder_tag: journald
 journal_forwarder_read_from_tail: true
 journal_forwarder_storage_path: /var/lib/fluent-bit
