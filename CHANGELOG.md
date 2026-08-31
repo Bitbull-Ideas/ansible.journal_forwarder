@@ -2,6 +2,18 @@
 
 All notable changes to `joe-speedboat.journal_forwarder` are documented in this file.
 
+## v1.1.1 - 2026-08-31
+
+### Fixed
+
+- Corrected the k3s Event bridge `blockinfile` argument indentation so Ansible can parse the RHEL task file.
+- Made OS task dispatch skip unavailable platform-specific files, allowing the RHEL-only k3s Event task to coexist with Ubuntu targets.
+- Kept Rocky Linux 8 uninstall on `/usr/bin/python3.9` instead of overriding it with the unsupported system Python 3.6 interpreter.
+
+### Verified
+
+- Completed install, independent state checks, idempotency, uninstall cleanup, reinstall, and final idempotency on Rocky Linux 8.10, 9.8, and 10.2 plus Ubuntu 22.04, 24.04, and 26.04.
+
 ## v1.1.0 - 2026-08-24
 
 ### Added

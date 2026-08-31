@@ -90,7 +90,7 @@ Currently documented/tested families:
 
 The role metadata may list broader Debian/Ubuntu versions. Do not claim support for an OS unless it has been verified on a real target or representative lab VM.
 
-RHEL-family 8 targets need a Python interpreter supported by the controller for fact gathering. The role keeps command-module package handling in `tasks/rhelAll-8/` for target-side compatibility.
+RHEL-family 8 targets need Python 3.9 for fact gathering and controller modules. Pin `ansible_python_interpreter: /usr/bin/python3.9`; install and uninstall must preserve that interpreter. The role keeps command-module package handling in `tasks/rhelAll-8/` for target-side compatibility.
 
 ## Important variables
 

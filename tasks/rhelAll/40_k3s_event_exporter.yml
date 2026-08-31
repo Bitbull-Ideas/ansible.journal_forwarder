@@ -58,9 +58,9 @@
           Match             k3s_event_file
           Script            {{ journal_forwarder_k3s_event_exporter_lua_path }}
           Call              normalize_kubernetes_event
-  owner: root
-  group: root
-  mode: '0644'
+    owner: root
+    group: root
+    mode: '0644'
   when: journal_forwarder_k3s_event_exporter_enabled | bool
   notify: restart fluent-bit
 
